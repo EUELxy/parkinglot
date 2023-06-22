@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Parking Lot</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        .parking-spot {
+            width: 50px;
+            height: 50px;
+            border: 1px solid black;
+            display: inline-block;
+            text-align: center;
+            vertical-align: middle;
+            font-size: 20px;
+            margin: 5px;
+        }
+    </style>
+</head>
+
+<body class="bg-dark text-white">
+    <div class="container mt-4">
+        <h1>Parking Lot</h1>
+        <div id="parkingLot" class="d-flex flex-wrap justify-content-center"></div>
+        <button class="btn btn-primary mt-3" onclick="parkCar()">Park Car</button>
+
+        <h2 class="mt-4">Parked Cars</h2>
+        <table class="table text-white">
+            <thead>
+                <tr>
+                    <th>Spot Number</th>
+                    <th>Car</th>
+                    <th>Remove</th>
+                </tr>
+            </thead>
+            <tbody id="carList"></tbody>
+        </table>
+    </div>
+
+    <script>
+        var parkingLot = document.getElementById("parkingLot");
+        var carList = document.getElementById("carList");
+        var spotCount = 0;
+
+        function parkCar() {
+            if (spotCount < 15) {
+                var spot = document.createElement("div");
+                spot.className = "parking-spot bg-success text-white";
+                spot.innerHTML = spotCount + 1;
+                spot.setAttribute("data-spot", spotCount);
+                spot.onclick = removeCar;
+                parkingLot.appendChild(spot);
+
+                var carRow = document.createElement("tr");
+                var spotNumberCell = document.createElement("td");
+                spotNumberCell.innerHTML = spotCount + 1;
+                var carCell = document.createElement("td");
+                carCell.innerHTML = "Car " + (spotCount + 1);
+                var removeCell = document.createElement("td");
+                var removeButton = document.createElement("button");
+                removeButton.className = "btn btn-danger btn-sm";
+                removeButton.innerHTML = "Remove";
+                removeButton.onclick = removeCar.bind(null, spotCount);
+                removeCell.appendChild(removeButton);
+
+                carRow.appendChild(spotNumberCell);
+                carRow.appendChild(carCell);
+                carRow.appendChild(removeCell);
+
+                carList.appendChild(carRow);
+
+                spotCount++;
+            } else {
+                alert("Parking lot is full!");
+            }
+        }
+
+        function removeCar(spotNumber) {
+            parkingLot.removeChild(parkingLot.children[spotNumber]);
+
+            var carRows = carList.getElementsByTagName("tr");
+            carList.removeChild(carRows[spotNumber]);
+
+            // Update data-spot attribute for remaining spots
+            var spots = parkingLot.getElementsByClassName("parking-spot");
+            for (var i = 0; i < spots.length; i++) {
+                spots[i].setAttribute("data-spot", i);
+            }
+
+            spotCount--;
+        }
+    </script>
+</body>
+
+</html>
